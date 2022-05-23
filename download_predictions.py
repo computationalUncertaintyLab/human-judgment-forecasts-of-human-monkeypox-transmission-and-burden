@@ -45,7 +45,7 @@ if __name__ == "__main__":
         # META DATA FILE
         metadata["question_text"].append( metac.data["description"]  )
         metadata["qid"].append( metac.data["id"] )
-        metadata["page_url"].append( metac.data["page_url"]   )
+        metadata["page_url"].append( metac.data["url"]   )
         metadata["title"].append( metac.data["title"] )
         metadata["numOfForecasts"].append( metac.data["number_of_predictions"] )
         metadata["created_time"].append(metac.data["created_time"] )
