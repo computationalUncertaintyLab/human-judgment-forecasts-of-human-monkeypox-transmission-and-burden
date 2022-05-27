@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
         clr = handle[0].get_color()
         
-        if n in [0,1,4,5,6]:
+        if n in [0,1,3,4,5,6]:
             ax.text( median, ypos+0.02, "{:,.0f}".format( float(median)), va="bottom", ha="center", fontsize=10, color=clr, weight="bold" )
             ax.text( _10th , ypos+0.02, "{:,.0f}".format( float(_10th)) , va="bottom", ha="right", fontsize=10, color=clr, weight="bold" )
             ax.text( _90th , ypos+0.02, "{:,.0f}".format( float(_90th)) , va="bottom", ha="left"  , fontsize=10, color=clr, weight="bold" )
@@ -50,12 +50,13 @@ if __name__ == "__main__":
             
         if n ==2:
             ax.text( median, ypos-0.075, "median".format( float(median)), va="top", ha="center", fontsize=10 , color=clr, weight="bold" )
-            ax.text( _10th , ypos-0.075, "10th".format( float(_10th)) , va="top", ha="center"  , fontsize=10 , color=clr, weight="bold" )
-            ax.text( _90th , ypos-0.075, "90th".format( float(_90th)) , va="top", ha="center"  , fontsize=10 , color=clr, weight="bold" )
+            ax.text( _10th , ypos-0.075, "10th".format( float(_10th)) , va="top", ha="right"  , fontsize=10 , color=clr, weight="bold" )
+            ax.text( _90th , ypos-0.075, "90th".format( float(_90th)) , va="top", ha="left"  , fontsize=10 , color=clr, weight="bold" )
             
 
     ax.set_xscale("log")
     ax.set_xticks([10**x for x in np.arange(1,6)])
+    ax.set_xticklabels(["10","100","1,000","10,000","100,000"],fontsize=10)
     
     
     ax.set_yticks(np.arange(0,7))
@@ -64,8 +65,8 @@ if __name__ == "__main__":
                     ,"Human monkeypox cases reported\nin US as of July 1, 2022"
                     ,"Human monkeypox cases reported\nin Canada as of July 1, 2022"    
                     ,"Human monkeypox cases reported\nin Europe as of July 1, 2022"
-                    ,"Num. of countries reporting\n at least one infection on July 31"
-                    ,"Num. of US states reporting\n at least one infection on July 1"][::-1])
+                    ,"Num. of countries reporting\n at least one case on July 31"
+                    ,"Num. of US states reporting\n at least one case on July 1"][::-1])
 
     ax.set_xlabel("Predicted values", fontsize=8)
     

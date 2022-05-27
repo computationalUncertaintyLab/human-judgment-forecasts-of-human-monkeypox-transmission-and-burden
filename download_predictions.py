@@ -3,6 +3,8 @@
 import sys
 from metaculus_client import metaculus_client
 from interfaceForServer import interfaceForServer
+
+import numpy as np
 import pandas as pd
 
 if __name__ == "__main__":
@@ -18,11 +20,23 @@ if __name__ == "__main__":
                 ,"page_url":[]
                 ,"title":[]
                 ,"numOfForecasts":[]
+                ,"numOfOforecasters":[]
                 ,"lower_bound":[]
                 ,"upper_bond":[]
                 ,"created_time":[]
                 ,"publish_time":[]
                 ,"resolve_time":[]}
+
+    historical_forecast_data = {"qid":[]
+                                ,"time":[]
+                                ,"min":[]
+                                ,"max":[]
+                                ,"deriv_ratio":[]
+                                ,"q1":[]
+                                ,"q2":[]
+                                ,"q3":[]
+    }
+    
     for q in questions:
         sys.stdout.write('Downloading data from Q {:04d}\n'.format(q))
         sys.stdout.flush()
@@ -41,13 +55,53 @@ if __name__ == "__main__":
             continue
         interface.extractCommunityPrediction(metac, comm)
 
+        # store historical predictions
 
+        def scaleup(x,minvalue,maxvalue,deriv_ratio):
+            if deriv_ratio==1:
+                b = (maxvalue-minvalue)
+                return minvalue + b*x
+            else:
+                exponent = np.log(deriv_ratio)
+                b = (maxvalue-minvalue)/(deriv_ratio-1.)
+                return minvalue + b* np.exp( exponent*x)
+
+        history = metac.data['metaculus_prediction']['history']
+
+        for info in history:
+            time = info['t']
+
+            try:
+                q1 = scaleup(info['x']['q1'], metac.minvalue, metac.maxvalue, metac.deriv_ratio)
+                q2 = scaleup(info['x']['q2'], metac.minvalue, metac.maxvalue, metac.deriv_ratio)
+                q3 = scaleup(info['x']['q3'], metac.minvalue, metac.maxvalue, metac.deriv_ratio)
+                
+            except TypeError: #binary prediction
+                q1=np.nan
+                q2=info['x']
+                q3=np.nan
+                
+            historical_forecast_data["qid"].append(q)
+            historical_forecast_data["time"].append(time)
+            historical_forecast_data["min"].append( metac.minvalue )
+            historical_forecast_data["max"].append( metac.maxvalue)
+            historical_forecast_data["deriv_ratio"].append(metac.deriv_ratio)
+
+            
+            historical_forecast_data["q1"].append(q1)
+            historical_forecast_data["q2"].append(q2)
+            historical_forecast_data["q3"].append(q3)
+
+
+        nu = metac.data['community_prediction']['history'][-1]['nu']
+            
         # META DATA FILE
         metadata["question_text"].append( metac.data["description"]  )
         metadata["qid"].append( metac.data["id"] )
         metadata["page_url"].append( metac.data["url"]   )
         metadata["title"].append( metac.data["title"] )
         metadata["numOfForecasts"].append( metac.data["number_of_predictions"] )
+        metadata["numOfOforecasters"].append( nu )
         metadata["created_time"].append(metac.data["created_time"] )
         metadata["publish_time"].append(metac.data["publish_time"] )
         metadata["resolve_time"].append(metac.data["resolve_time"] )
@@ -59,9 +113,14 @@ if __name__ == "__main__":
             metadata["lower_bound"].append(0)
             metadata["upper_bond"].append(1)
 
+    # Write meta data
     metadata = pd.DataFrame(metadata)
     metadata.to_csv("metadata.csv")
-            
+
+    # write historical predictions
+    historical_forecast_data = pd.DataFrame(historical_forecast_data)
+    historical_forecast_data.to_csv("historical_forecast_data.csv")
+    
      # compute and store prob dens functions
     interface.communityPredictions2DF()
     interface.out()

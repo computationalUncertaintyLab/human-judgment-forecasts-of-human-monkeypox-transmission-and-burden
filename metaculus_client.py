@@ -82,8 +82,7 @@ class metaculus_client(object):
         else:
             exponent = np.log(deriv_ratio)
             b = (maxvalue-minvalue)/(deriv_ratio-1.)
-            interval = 0 + b* np.exp( exponent*np.linspace(0,1,numProbs))
-
+            interval = minvalue + b* np.exp( exponent*np.linspace(0,1,numProbs))
         
         print(self.QN)
         print(len(density))

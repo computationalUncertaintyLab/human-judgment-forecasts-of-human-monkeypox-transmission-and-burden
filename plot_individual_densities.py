@@ -3,10 +3,18 @@
 import sys
 import numpy as np
 import pandas as pd
+
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
 import seaborn as sns
 
+from datetime import datetime
+
 if __name__ == "__main__":
+
+    def stamp(ax,txt):
+        ax.text(0.01,0.99,txt,weight="bold",va="top",ha="left",transform=ax.transAxes)
 
     def mm2inch(x):
         return x/25.4
@@ -110,29 +118,49 @@ if __name__ == "__main__":
 
     subset = d.loc[d.qid==10977]
 
-    def cdf(x,dens):
-        x = np.sort(x)
-        prob = np.cumsum(dens)/sum(dens)
-        return x,prob
-    x,px = cdf(subset.interval.values, subset.densityValue.values)
+    # def cdf(x,dens):
+    #     x = np.sort(x)
+    #     prob = np.cumsum(dens)/sum(dens)
+    #     return x,prob
+    # x,px = cdf(subset.interval.values, subset.densityValue.values)
 
-    n = len(x)
-    a = 0.05
-    epsilon = ( (1/(2*n)) * np.log(2/a) )**0.5
+    # n = len(x)
+    # a = 0.05
+    # epsilon = ( (1/(2*n)) * np.log(2/a) )**0.5
 
-    L = np.array([ max(x,0) for x in px-epsilon])
-    U = np.array([ min(x,1) for x in px+epsilon])
+    # L = np.array([ max(x,0) for x in px-epsilon])
+    # U = np.array([ min(x,1) for x in px+epsilon])
 
-    l = ax.plot(x,1.-px)
-
-    ax.fill_between(x,1.-L,1.-U, color = l[0].get_color() , alpha=0.50)
+    # ax = axs[0]
+    # l = ax.plot(x,1.-px)
+    # ax.fill_between(x,1.-L,1.-U, color = l[0].get_color() , alpha=0.50)
     
-    ax.set_ylabel("Prob. the crowd assigns to the value x or greater ", fontsize=10)
-    ax.set_xlabel("Prob. the WHO will declare monkeypox a PHEIC before 2023", fontsize=10)
+    # ax.set_ylabel("Prob. the crowd assigns\nto the value x or greater ", fontsize=10)
+    # ax.set_xlabel("Prob. the WHO will declare monkeypox a PHEIC before 2023", fontsize=10)
+
+    # ax.set_yticks(np.arange(0,1+0.1,0.1))
+    
+    # ax.tick_params(labelsize=8)
+
+    # stamp(ax,"A.")
+    
+
+    hp = pd.read_csv("historical_forecast_data.csv")
+    hp["ts"] = [ datetime.fromtimestamp(x) for x in hp.time.values ]
+    
+    subset_hp = hp.loc[hp.qid==10977]
+    ax.fill_between( subset_hp.ts, subset_hp.q1, subset_hp.q3, alpha=0.50 )
+    l = ax.plot( subset_hp.ts, subset_hp.q2)
 
     ax.set_yticks(np.arange(0,1+0.1,0.1))
-    
-    ax.tick_params(labelsize=8)
+    ax.tick_params(which="both", labelsize=8)
+
+    ax.set_ylabel("Predictive median",fontsize=10)
+
+    dtFmt = mdates.DateFormatter('%b-%d\n%H:%m') # define the formatting
+    ax.xaxis.set_major_formatter(dtFmt)
+
+#    stamp(ax,"B.")
     
     save(10977)
 
