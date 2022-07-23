@@ -4,10 +4,10 @@
 The goal of this repository is to present and store human judgment forecasts of transmission and burden of the monkeypox virus (MPXV). 
 Questions related to human monkeypox and MXPV are hosted by [Metaculus](https://www.metaculus.com/questions/).
 Metadata about the questions posed to the crowd can be found in `metadata.csv`.
-Ensemble forecast data is stored in two csv files: `communitypredictions.csv` and `communiityquantiles.csv`  
+Ensemble forecast data is stored in two csv files: `communitypredictions.csv` and `communityquantiles.csv`  
 
 ## Make
-There is a `Makefile` included in this repository that downlloads all ensemble forecasts from the Metaculus API and creates figures that were used in the associated manuscript. 
+There is a `Makefile` included in this repository that downloads all ensemble forecasts from the Metaculus API and creates figures that were used in the associated manuscript. 
 
 ## Manuscript
 A manuscript related to this work can be found at: 
@@ -37,6 +37,6 @@ Centre for Mathematical Modelling of Infectious Diseases, London School of Hygie
 Department of Epidemiology, Mailman School of Public Health, Columbia University, New York, United States.
 
 
-Correspondance and questions can be sent to
+Correspondence and questions can be sent to
 Prof Thomas McAndrew
 mcandrew@lehigh.edu
