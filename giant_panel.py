@@ -156,7 +156,7 @@ if __name__ == "__main__":
     ax.axvline(19,color="black",ls="--",lw=1,alpha=0.50,label="Truth as of 2020-05-24")
     ax.legend(frameon=False,loc="upper right",fontsize=8)
 
-    ax.set_yticklabels([])
+    #ax.set_yticklabels([])
 
     stamp(ax,"D.")
 
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     ax.set_ylabel("", fontsize=10)
     ax.set_xlabel("Num. of US states reporting at\n least one infection on July 1", fontsize=8)
 
-    ax.set_yticklabels([])
+    #ax.set_yticklabels([])
 
     stamp(ax,"E.")
 
